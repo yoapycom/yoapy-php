@@ -1,0 +1,39 @@
+{
+  "name": "yoapycom/yoapy-php",
+  "description": "Framework-agnostic PHP client for YoApy API (HMAC-signed, JSON-only).",
+  "type": "library",
+  "license": "MIT",
+  "keywords": [
+    "yoapy",
+    "api",
+    "social",
+    "hmac",
+    "php",
+    "sdk"
+  ],
+  "authors": [
+    {
+      "name": "YoApy Team",
+      "email": "contact@yoapy.com"
+    }
+  ],
+  "require": {
+    "php": "^8.0",
+    "ext-json": "*",
+    "ext-hash": "*",
+    "ext-curl": "*"
+  },
+  "suggest": {
+    "guzzlehttp/guzzle": "^7.8 for Guzzle-based transport if preferred"
+  },
+  "autoload": {
+    "psr-4": {
+      "YoApy\\SDK\\": "src/"
+    }
+  },
+  "bin": [
+    "bin/yoapy"
+  ],
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

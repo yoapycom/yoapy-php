@@ -1,0 +1,42 @@
+#!/usr/bin/env php
+<?php
+require __DIR__ . '/../vendor/autoload.php';
+
+use YoApy\SDK\YoApyClient;
+
+$cmd = $argv[1] ?? 'help';
+
+$base  = getenv('YOAPY_BASE_URL') ?: 'https://api.yoapy.com';
+$keyId = getenv('YOAPY_KEY_ID') ?: '';
+$secret= getenv('YOAPY_SECRET_HEX') ?: '';
+$timeout = (int)(getenv('YOAPY_HTTP_TIMEOUT') ?: 30);
+
+$client = new YoApyClient($base, $keyId, $secret, null, $timeout);
+
+switch ($cmd) {
+  case 'ping':
+    $r = $client->authPing();
+    echo json_encode($r, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES), PHP_EOL;
+    break;
+  case 'post':
+    $json = $argv[2] ?? '';
+    if ($json === '') { fwrite(STDERR, "Usage: yoapy post '<json>'\n"); exit(2); }
+    $payload = json_decode($json, true);
+    if (!is_array($payload)) { fwrite(STDERR, "Invalid JSON\n"); exit(2); }
+    $r = $client->createPost($payload);
+    echo json_encode($r, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES), PHP_EOL;
+    break;
+  case 'task':
+    $taskId = $argv[2] ?? '';
+    if ($taskId === '') { fwrite(STDERR, "Usage: yoapy task <task_id>\n"); exit(2); }
+    $r = $client->getTaskResult($taskId);
+    echo json_encode($r, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES), PHP_EOL;
+    break;
+  default:
+    echo "YoApy CLI\n";
+    echo "Usage:\n";
+    echo "  YOAPY_BASE_URL=... YOAPY_KEY_ID=... YOAPY_SECRET_HEX=... yoapy ping\n";
+    echo "  yoapy post '<json>'\n";
+    echo "  yoapy task <task_id>\n";
+    exit(1);
+}
